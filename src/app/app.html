@@ -1,0 +1,38 @@
+<div class="announcement">
+  <span>Good things for your everyday.</span><span>Free shipping on orders $100+ <span
+      aria-hidden="true">↗</span></span>
+</div>
+<header class="site-header">
+  <div class="nav-shell">
+    <a class="wordmark" routerLink="/" aria-label="Morrow home">morrow<span>®</span></a>
+    <button class="menu-toggle" [attr.aria-expanded]="menuOpen()" aria-controls="main-navigation"
+      (click)="menuOpen.set(!menuOpen())">
+      {{ menuOpen() ? 'Close' : 'Menu' }} <span aria-hidden="true">☰</span>
+    </button>
+    <nav id="main-navigation" [class.open]="menuOpen()" aria-label="Main navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page">Home</a>
+      <a routerLink="/products" routerLinkActive="active" ariaCurrentWhenActive="page">Shop all</a>
+      <a routerLink="/users" routerLinkActive="active" ariaCurrentWhenActive="page">Community</a>
+      <a routerLink="/orders" routerLinkActive="active" ariaCurrentWhenActive="page">Orders</a>
+      <a routerLink="/admin" routerLinkActive="active" ariaCurrentWhenActive="page">Dashboard</a>
+      <a routerLink="/auth/login" routerLinkActive="active" ariaCurrentWhenActive="page">Account</a>
+    </nav>
+    <a class="cart-link" routerLink="/cart" routerLinkActive="active" aria-label="Shopping cart">Bag <span>{{
+        cart.count() }}</span></a>
+  </div>
+</header>
+<main id="main-content"><router-outlet /></main>
+<footer class="site-footer">
+  <div>
+    <a class="wordmark" routerLink="/">morrow<span>®</span></a>
+    <p>A little less ordinary.<br />A little more everyday.</p>
+  </div>
+  <div class="footer-links">
+    <a routerLink="/products">Explore the collection ↗</a><a routerLink="/orders">Your orders ↗</a><a
+      routerLink="/users">Our community ↗</a>
+  </div>
+  <div class="footer-note">
+    <span>Thoughtfully chosen. Made to stay.</span><small>© 2026 Morrow. A local demo storefront.</small>
+  </div>
+</footer>

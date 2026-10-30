@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340"><defs>
+<linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6d876b"/><stop offset=".45" stop-color="#3e614a"/><stop offset="1" stop-color="#233e30"/></linearGradient>
+<linearGradient id="cream" x1="0" y1="0" x2="1" y2=".6"><stop stop-color="#f1ead8"/><stop offset=".55" stop-color="#ded2b6"/><stop offset="1" stop-color="#baa98a"/></linearGradient>
+<linearGradient id="wood" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#d5b48d"/><stop offset=".6" stop-color="#bd946a"/><stop offset="1" stop-color="#a77b50"/></linearGradient>
+<filter id="shadow" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="1" dy="14" stdDeviation="10" flood-color="#263a22" flood-opacity=".18"/></filter>
+</defs><ellipse cx="200" cy="287" rx="95" ry="11" fill="#1f3227" opacity=".07"/><g filter="url(#shadow)"><path d="M100 87l169-22 35 206-169 23z" fill="#294e39"/><path d="M113 89l148-20 34 198-149 22z" fill="url(#green)"/><path d="M132 290l164-23-5-8-163 23" fill="#dfd9bd"/><path d="M250 84l31 180" stroke="#b2b596" stroke-width="4"/><text x="192" y="172" text-anchor="middle" fill="#d8d5ad" font-size="13" font-family="Georgia" transform="rotate(-8 192 172)">a little thought.</text></g></svg>

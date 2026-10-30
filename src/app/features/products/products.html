@@ -1,0 +1,83 @@
+<div class="container page-shell">
+  <div class="breadcrumb">Morrow / The collection</div>
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">GOOD THINGS, ALL IN ONE PLACE</p>
+      <h1>The everyday edit<span class="green-period">.</span></h1>
+      <p>Find the things that fit your life, beautifully.</p>
+    </div>
+    <div class="collection-count">
+      <strong>{{ (catalog$ | async)?.length ?? 0 }}</strong><span>considered essentials</span>
+    </div>
+  </div>
+  <form class="catalog-toolbar" [formGroup]="form" (submit)="$event.preventDefault()">
+    <div class="search-field">
+      <span aria-hidden="true">⌕</span><label class="sr-only" for="product-search">Search products</label><input
+        id="product-search" formControlName="search" placeholder="Search your next favorite…" type="search" />
+    </div>
+    <div class="select-field">
+      <label for="sort">Sort by</label><select id="sort" formControlName="sort">
+        <option value="featured">Featured</option>
+        <option value="price-asc">Price: low to high</option>
+        <option value="price-desc">Price: high to low</option>
+        <option value="rating">Top rated</option>
+      </select>
+    </div>
+  </form>
+  @if (activeFilters.length) {
+  <p class="selected-filters">Selected: {{ activeFilters.join(' · ') }}</p>
+  }
+  <div class="catalog-layout">
+    <aside class="filters">
+      <p class="eyebrow">CATEGORIES</p>
+      <div class="category-filters">
+        @for (category of categories; track category) {
+        <button class="filter-button" [class.selected]="form.controls.category.value === category"
+          (click)="form.controls.category.setValue(category)">
+          {{ category === 'All' ? 'All essentials' : category }}
+          <span>{{ category === 'All' ? products.length : '↗' }}</span>
+        </button>
+        }
+      </div>
+      <div class="price-filter">
+        <label for="price-range">Maximum price
+          <strong>{{
+            +form.controls.maxPrice.value | currency: 'USD' : 'symbol' : '1.0-0'
+            }}</strong></label><input id="price-range" type="range" min="0" max="500" step="10"
+          [formControl]="form.controls.maxPrice" />
+        <div><span>$0</span><span>$500</span></div>
+      </div>
+      <div class="filter-aside">
+        <span>✳</span>
+        <h3>Good by design.</h3>
+        <p>Every piece has a purpose. Find yours.</p>
+      </div>
+    </aside>
+    <section class="catalog-results" aria-label="Product results">
+      <div class="results-bar">
+        <span>{{ getFilteredProducts().length }} essentials found</span><span class="clear-filters"
+          (click)="reset()">Clear filters ↺</span>
+      </div>
+      @if (loading) {
+      <app-status-panel />
+      } @else if (error) {
+      <app-status-panel kind="error" title="The collection is taking a moment" message="Please try loading it again."
+        (retry)="retry()" />
+      } @else if (!getFilteredProducts().length) {
+      <app-status-panel kind="empty" title="No matches just yet" message="Try another search or clear your filters." />
+      } @else {
+      <div class="product-grid catalog-grid">
+        @for (product of pagedProducts; track $index) {
+        <app-product-card [product]="product" [options]="{ compact: true, showRating: true }" (add)="add($event)" />
+        }
+      </div>
+      <app-pagination [totalItems]="getFilteredProducts().length" [page]="page()" [pageSize]="pageSize"
+        itemLabel="essentials" (pageChange)="page.set($event)" />
+      <div class="load-more">
+        <small>Collection value {{ getCollectionValue() | currency }}</small>
+      </div>
+      }
+      <p class="success-note" role="status">{{ notice }}</p>
+    </section>
+  </div>
+</div>

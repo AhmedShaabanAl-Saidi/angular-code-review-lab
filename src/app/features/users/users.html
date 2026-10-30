@@ -1,0 +1,74 @@
+<div class="container page-shell">
+  <div class="breadcrumb">Morrow / Community</div>
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">GOOD COMPANY</p>
+      <h1>Our kind of people<span class="green-period">.</span></h1>
+      <p>The everyday people behind our everyday favorites.</p>
+    </div>
+    <span class="pill">{{ users.length }} community members</span>
+  </div>
+  <div class="panel">
+    <div class="panel-toolbar">
+      <div>
+        <h2>The community</h2>
+        <p>People, places, and a shared eye for good things.</p>
+      </div>
+      <div class="search-field">
+        <span aria-hidden="true">⌕</span><label for="user-search" class="sr-only">Search community</label><input
+          id="user-search" type="search" placeholder="Search people or places" [formControl]="search" />
+      </div>
+    </div>
+    @if (loading) {
+    <app-status-panel title="Gathering good company" />
+    } @else if (error) {
+    <app-status-panel kind="error" title="We couldn't load the community" message="Please try again in a moment."
+      (retry)="load(true)" />
+    } @else if (!visibleUsers.length) {
+    <app-status-panel kind="empty" title="No one here just yet" message="Try a different search or come back soon." />
+    } @else {
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Member</th>
+            <th scope="col">Location</th>
+            <th scope="col">Joined</th>
+            <th scope="col">Orders</th>
+            <th scope="col">Total spent</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of pagedUsers; track user.id) {
+          <tr>
+            <td>
+              <div class="person">
+                <span class="avatar">{{ user.name.charAt(0) }}{{ user.name.split(' ')[1]?.charAt(0) }}</span>
+                <div>
+                  <strong>{{ user.name }}</strong><small>{{ user.email }}</small>
+                </div>
+              </div>
+            </td>
+            <td>{{ user.city }}</td>
+            <td>{{ user.joined | date: 'MMM d, y' }}</td>
+            <td>{{ user.orders }}</td>
+            <td>{{ user.spent | currency }}</td>
+            <td>
+              <span class="badge" [class.badge-new]="user.status === 'New'">{{
+                user.status
+                }}</span>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pagination [totalItems]="visibleUsers.length" [page]="page()" [pageSize]="pageSize"
+      itemLabel="members" (pageChange)="page.set($event)" />
+    }
+    <div class="panel-foot">
+      <span>Thoughtful things bring people together.</span><span>Updated {{ lastSync | date: 'HH:mm:ss' }}</span>
+    </div>
+  </div>
+</div>

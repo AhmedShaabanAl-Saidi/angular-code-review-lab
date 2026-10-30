@@ -1,0 +1,70 @@
+<div class="container page-shell">
+  <div class="breadcrumb">Morrow / Orders</div>
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">ON THEIR WAY TO A GOOD HOME</p>
+      <h1>The order book<span class="green-period">.</span></h1>
+      <p>A little closer to someone's everyday.</p>
+    </div>
+    <span class="pill">{{ orders.length }} orders in the book</span>
+  </div>
+  <div class="panel">
+    <div class="panel-toolbar">
+      <div>
+        <h2>All orders</h2>
+        <p>From first click to front door.</p>
+      </div>
+      <div class="select-field">
+        <label for="order-status">Status</label><select id="order-status" [formControl]="status">
+          <option>All</option>
+          <option>Processing</option>
+          <option>Shipped</option>
+          <option>Delivered</option>
+          <option>Cancelled</option>
+        </select>
+      </div>
+    </div>
+    @if (loading) {
+    <app-status-panel title="Opening the order book" />
+    } @else {
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Order</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Placed</th>
+            <th scope="col">Items</th>
+            <th scope="col">Total</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of pagedOrders; track order.id) {
+          <tr>
+            <td>
+              <strong>#MR-{{ order.id }}</strong>
+            </td>
+            <td>{{ order.customer.name }}</td>
+            <td>{{ order.date | date: 'MMM d, y' }}</td>
+            <td>{{ order.items.length }} essentials</td>
+            <td>{{ order.total | currency }}</td>
+            <td>
+              <span class="badge" [class.badge-new]="order.status === 'Processing'"
+                [class.badge-muted]="order.status === 'Cancelled'">{{ order.status }}</span>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (visibleOrders.length) {
+    <app-pagination [totalItems]="visibleOrders.length" [page]="page()" [pageSize]="pageSize"
+      itemLabel="orders" (pageChange)="page.set($event)" />
+    }
+    }
+    <div class="panel-foot">
+      <span>Made to be looked forward to.</span><span>{{ visibleOrders.length }} orders</span>
+    </div>
+  </div>
+</div>

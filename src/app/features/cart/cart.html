@@ -1,0 +1,73 @@
+<div class="container page-shell">
+  <div class="breadcrumb"><a routerLink="/products">The collection</a> / Your bag</div>
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">GOOD CHOICES, ALL YOURS</p>
+      <h1>Your bag<span class="green-period">.</span></h1>
+      <p>{{ cart.count() }} little reasons to look forward to delivery.</p>
+    </div>
+    <a class="text-link" routerLink="/products">Keep exploring ↗</a>
+  </div>
+  @if (!cart.items().length) {
+  <section class="status-panel">
+    <span class="status-symbol">◇</span>
+    <h2>A little room for something good.</h2>
+    <p>Your bag is empty. Let's find something you'll reach for every day.</p>
+    <a class="button" routerLink="/products">Explore the collection ↗</a>
+  </section>
+  } @else {
+  <div class="cart-layout">
+    <section aria-label="Cart items">
+      <div class="cart-table-heading">
+        <span>YOUR ESSENTIALS</span><span>QUANTITY / TOTAL</span>
+      </div>
+      @for (item of cart.items(); track item.product.id) {
+      <article class="cart-row">
+        <a class="cart-art" [routerLink]="['/products', item.product.id]" [style.background]="item.product.color"><img
+            [src]="item.product.image" [alt]="item.product.name" width="112" height="112" /></a>
+        <div class="cart-product">
+          <p class="eyebrow">{{ item.product.category }}</p>
+          <h2>
+            <a [routerLink]="['/products', item.product.id]">{{ item.product.name }}</a>
+          </h2>
+          <span>{{ item.product.price | currency }} each</span><button class="remove-button"
+            (click)="cart.remove(item.product.id)">Remove</button>
+        </div>
+        <div class="cart-quantity">
+          <label [for]="'quantity-' + item.product.id" class="sr-only">Quantity for {{ item.product.name
+            }}</label><input [id]="'quantity-' + item.product.id" type="number" min="1" max="99" step="1"
+            [value]="item.quantity" (change)="updateQuantity(item.product.id, $event)" /><strong>{{ item.product.price *
+            item.quantity | currency }}</strong>
+        </div>
+      </article>
+      }
+      <label class="gift-option"><input type="checkbox" [checked]="gift" (change)="setGift($event)" /> Make it a gift. A
+        little extra thought, on us.</label><app-delivery-note [delivery]="delivery" />
+    </section>
+    <aside class="order-summary">
+      <p class="eyebrow">THE DETAILS</p>
+      <h2>A good little total.</h2>
+      <div>
+        <span>Subtotal</span><strong data-testid="subtotal">{{ getSubtotal() | currency }}</strong>
+      </div>
+      <div>
+        <span>Shipping</span><strong data-testid="shipping">{{
+          getShipping() ? (getShipping() | currency) : 'On us'
+          }}</strong>
+      </div>
+      @if (getSubtotal() < 100) { <p class="shipping-hint">
+        Just {{ 100 - getSubtotal() | currency }} away from free shipping.
+        </p>
+        }
+        <div class="summary-total">
+          <span>Total</span><strong data-testid="total">{{ getTotal() | currency }}</strong>
+        </div>
+        <p class="summary-note">
+          Your bag is saved on this device. Take your time; good things are worth considering.
+        </p>
+        <a class="button" routerLink="/products">Keep exploring ↗</a>
+        <p class="checkout-note">Browsing today. Checkout isn't available in this demo.</p>
+    </aside>
+  </div>
+  }
+</div>

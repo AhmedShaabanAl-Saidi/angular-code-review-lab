@@ -1,0 +1,86 @@
+<section class="hero container">
+  <div class="hero-copy">
+    <div class="eyebrow"><span class="tiny-dot"></span> THE EVERYDAY COLLECTION / 2026</div>
+    <h1>Everyday.<br />A little <em>better.</em></h1>
+    <p>
+      Thoughtful essentials for the way you live.<br class="desktop-only" />
+      Less noise. More of what matters.
+    </p>
+    <a class="button" routerLink="/products">Find your next favorite <span>↗</span></a>
+    <div class="hero-proof">
+      <span class="proof-stars">★★★★★</span><span>Good company. Great finds.</span>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <span class="hero-circle"></span><img src="/art/hero.svg"
+      alt="A collection of studio headphones, a ceramic cup, and an everyday bag" width="680" height="590"
+      fetchpriority="high" />
+    <div class="floating-label"><span class="tiny-dot"></span> WELL MADE. WELL CHOSEN.</div>
+    <div class="hero-sticker">Made for<br /><em>your day.</em><span>✳</span></div>
+  </div>
+</section>
+<div class="benefit-bar">
+  <div class="container benefits">
+    <span><b>↗</b> Free shipping $100+</span><span><b>◇</b> Considered quality</span><span><b>↺</b> 30-day easy
+      returns</span><span><b>♡</b> Small things, big difference</span>
+  </div>
+</div>
+<section class="container section">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">A PLACE FOR EVERYTHING</p>
+      <h2>Find your kind of everyday.</h2>
+    </div>
+    <a class="text-link" routerLink="/products">Browse all categories ↗</a>
+  </div>
+  <div class="category-grid">
+    @for (category of categories; track category.name) {
+    <a class="category-card" routerLink="/products" [queryParams]="{ category: category.name }"
+      [style.background]="category.color">
+      <div>
+        <h3>{{ category.name }}</h3>
+        <p>{{ category.caption }}</p>
+      </div>
+      <img [src]="category.image" [alt]="category.name + ' collection'" width="280" height="240" loading="lazy" /><span
+        aria-hidden="true">↗</span>
+    </a>
+    }
+  </div>
+</section>
+<section class="container section featured-section">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">THE GOOD STUFF</p>
+      <h2>A few favorites. For a reason.</h2>
+    </div>
+    <a class="text-link" routerLink="/products">Shop the collection ↗</a>
+  </div>
+  @if (state().loading) {
+  <app-status-panel />
+  } @else if (state().error) {
+  <app-status-panel kind="error" title="A small interruption"
+    message="We couldn't load the collection. Let's give it another try." (retry)="retry()" />
+  } @else if (!featured().length) {
+  <app-status-panel kind="empty" title="New favorites are on their way"
+    message="Check back soon for our next collection." />
+  } @else {
+  <div class="product-grid">
+    @for (product of featured(); track product.id) {
+    <app-product-card [product]="product" (add)="add($event)" />
+    }
+  </div>
+  }
+  <p class="success-note" role="status">{{ added() }}</p>
+</section>
+<section class="container story-banner">
+  <div>
+    <p class="eyebrow">FEWER, BETTER THINGS</p>
+    <h2>Not more stuff.<br />More <em>good</em> stuff.</h2>
+    <p>
+      We believe the things you reach for every day should be<br class="desktop-only" />
+      worth reaching for. Simple as that.
+    </p>
+  </div>
+  <a class="button button-light" routerLink="/products">Make yourself at home ↗</a><span class="story-flower"
+    aria-hidden="true">✳</span>
+</section>

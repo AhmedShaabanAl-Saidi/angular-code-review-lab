@@ -1,0 +1,162 @@
+<div class="container page-shell dashboard">
+  <div class="breadcrumb">Morrow / Store overview</div>
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">A LITTLE PERSPECTIVE</p>
+      <h1>Good things add up<span class="green-period">.</span></h1>
+      <p>Your store at a glance. One considered day at a time.</p>
+    </div>
+    <button class="button button-outline" (click)="downloadReport()" [disabled]="loading || error || !orders.length">
+      Download report ↓
+    </button>
+  </div>
+  <div class="dashboard-toolbar">
+    <span><span class="tiny-dot"></span> STORE OVERVIEW <small>As of October 26, 2026</small></span>
+    <div class="dashboard-filters">
+      <div class="select-field">
+        <label for="dashboard-category">Collection</label><select id="dashboard-category" [formControl]="category">
+          <option>All</option>
+          <option>Audio</option>
+          <option>Home</option>
+          <option>Everyday</option>
+          <option>Workspace</option>
+        </select>
+      </div>
+      <div class="select-field">
+        <label for="period">Period</label><select id="period" [formControl]="period">
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  @if (loading) {
+  <app-status-panel title="Putting the picture together" />
+  } @else if (error) {
+  <app-status-panel kind="error" title="The overview is unavailable"
+    message="We couldn't gather your store data. Please try again." (retry)="load(true)" />
+  } @else if (!orders.length) {
+  <app-status-panel kind="empty" title="A fresh beginning"
+    message="Your store overview will appear when the first orders arrive." />
+  } @else {
+  <div class="stat-grid">
+    <article class="stat-card">
+      <p>Revenue <span>↗</span></p>
+      <strong>{{ getRevenue() | currency: 'USD' : 'symbol' : '1.0-0' }}</strong><small>Excluding cancelled
+        orders</small>
+    </article>
+    <article class="stat-card">
+      <p>Orders <span>◇</span></p>
+      <strong>{{ getOrdersInPeriod().length | number }}</strong><small>{{ getPendingCount() }} being thoughtfully
+        packed</small>
+    </article>
+    <article class="stat-card">
+      <p>Average order <span>↗</span></p>
+      <strong>{{ getAverageOrder() | currency }}</strong><small>A bag full of good choices</small>
+    </article>
+    <article class="stat-card">
+      <p>Customers <span>♡</span></p>
+      <strong>{{ getCustomersInPeriod() | number }}</strong><small>Unique customers this period</small>
+    </article>
+  </div>
+  <div class="dashboard-charts">
+    <section class="panel revenue-panel">
+      <div class="panel-toolbar">
+        <div>
+          <p class="eyebrow">THE BIGGER PICTURE</p>
+          <h2>A steady kind of good.</h2>
+        </div>
+        <span class="chart-key"><i></i> Revenue</span>
+      </div>
+      <div class="chart" role="img" aria-label="Revenue over the selected period">
+        @for (bar of getRevenueChart(); track bar.label) {
+        <div class="chart-column">
+          <span class="bar-value">{{ bar.value | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+          <div class="bar-track">
+            <div class="bar" [style.height.%]="bar.height"></div>
+          </div>
+          <span class="bar-label">{{ bar.label }}</span>
+        </div>
+        }
+      </div>
+    </section>
+    <section class="panel category-sales">
+      <div class="panel-toolbar">
+        <div>
+          <p class="eyebrow">WHERE THE GOOD GOES</p>
+          <h2>By collection</h2>
+        </div>
+      </div>
+      @for (sale of getCategorySales(); track sale.name) {
+      <div class="category-sale">
+        <div>
+          <span>{{ sale.name }}</span><strong>{{ sale.percent }}%</strong>
+        </div>
+        <div class="progress-track">
+          <span [style.width.%]="sale.percent" [style.background]="sale.color"></span>
+        </div>
+        <small>{{ sale.value | currency }}</small>
+      </div>
+      }
+    </section>
+  </div>
+  <div class="dashboard-bottom">
+    <section class="panel">
+      <div class="panel-toolbar">
+        <div>
+          <p class="eyebrow">FRESH FROM THE STORE</p>
+          <h2>Recent orders</h2>
+        </div>
+        <a class="text-link" routerLink="/orders">View all ↗</a>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Customer</th>
+              <th scope="col">Status</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of getRecentOrders(); track order.id) {
+            <tr>
+              <td>
+                <strong>#MR-{{ order.id }}</strong><small>{{ order.date | date: 'MMM d' }}</small>
+              </td>
+              <td>{{ customerName(order.userId) }}</td>
+              <td>
+                <span class="badge" [class.badge-new]="order.status === 'Processing'"
+                  [class.badge-muted]="order.status === 'Cancelled'">{{ order.status }}</span>
+              </td>
+              <td>{{ order.total | currency }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="panel popular-panel">
+      <div class="panel-toolbar">
+        <div>
+          <p class="eyebrow">CROWD FAVORITES</p>
+          <h2>Good taste, shared.</h2>
+        </div>
+      </div>
+      @for (entry of getPopularProducts(); track entry.product.id) {
+      <a class="popular-product" [routerLink]="['/products', entry.product.id]"><img [src]="entry.product.image"
+          [alt]="entry.product.name" width="56" height="56" [style.background]="entry.product.color" />
+        <div>
+          <strong>{{ entry.product.name }}</strong><small>{{ entry.product.category }} · {{ entry.quantity }}
+            sold</small>
+        </div>
+        <span>↗</span>
+      </a>
+      }
+    </section>
+  </div>
+  }
+  <p class="success-note" role="status">{{ reportMessage }}</p>
+</div>

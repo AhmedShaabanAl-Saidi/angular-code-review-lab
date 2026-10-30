@@ -1,0 +1,65 @@
+<div class="container page-shell">
+  <div class="breadcrumb"><a routerLink="/products">The collection</a> / Product details</div>
+  @if (state().loading) {
+  <app-status-panel />
+  } @else if (state().error) {
+  <app-status-panel kind="error" title="A small interruption" message="We couldn't load this product."
+    (retry)="retry()" />
+  } @else if (product(); as item) {
+  <div class="detail-layout">
+    <div class="detail-art" [style.background]="item.color">
+      <span class="eyebrow">THE EVERYDAY COLLECTION</span><img [src]="item.image" [alt]="item.name" width="600"
+        height="550" /><span class="detail-art-note">WELL MADE. WELL CHOSEN.</span>
+    </div>
+    <div class="detail-copy">
+      <p class="eyebrow">{{ item.category }} / MORROW ESSENTIALS</p>
+      <h1>{{ item.name }}</h1>
+      <p class="detail-rating">
+        <span>★★★★★</span> {{ item.rating }} · {{ item.reviews }} thoughtful reviews
+      </p>
+      <p class="detail-price">
+        {{ item.price | currency }}
+        @if (item.originalPrice) {
+        <del>{{ item.originalPrice | currency }}</del>
+        }
+      </p>
+      <p class="detail-description">{{ item.description }}</p>
+      <div class="stock">
+        <span class="tiny-dot"></span> In stock · {{ item.stock }} ready to find a home
+      </div>
+      <div class="detail-purchase">
+        <div>
+          <label for="detail-quantity">Quantity</label><input id="detail-quantity" type="number" min="1" max="99"
+            step="1" [formControl]="quantity" />
+        </div>
+        <button class="button" (click)="add()">Add to bag <span>↗</span></button>
+      </div>
+      @if (quantity.invalid && quantity.touched) {
+      <p class="field-error">Choose a whole quantity between 1 and 99.</p>
+      }
+      <p class="success-note" role="status">
+        {{ message() }}
+        @if (message()) {
+        <a routerLink="/cart">View your bag ↗</a>
+        }
+      </p>
+      <div class="detail-promises">
+        <p><span>↗</span> Free shipping on orders $100+</p>
+        <p><span>↺</span> 30 days to make yourself at home</p>
+        <p><span>◇</span> Thoughtfully chosen for everyday use</p>
+      </div>
+      <details open>
+        <summary>The little details</summary>
+        <p>
+          Designed for daily use, with considered finishes and a simple, timeless shape. Keep
+          clean with a soft cloth and enjoy for years to come.
+        </p>
+      </details>
+    </div>
+  </div>
+  } @else {
+  <app-status-panel kind="empty" title="This favorite isn't here"
+    message="That product may have moved. There's plenty more to explore." />
+  <div class="center"><a class="button" routerLink="/products">Back to the collection ↗</a></div>
+  }
+</div>

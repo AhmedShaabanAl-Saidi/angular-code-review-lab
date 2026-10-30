@@ -1,0 +1,43 @@
+<div class="pagination" role="navigation" aria-label="Pagination">
+  <p class="pagination-summary" role="status" aria-live="polite">
+    Showing {{ startItem() }}–{{ endItem() }} of {{ totalItems() }} {{ itemLabel() }}
+  </p>
+  @if (totalPages() > 1) {
+    <div class="pagination-actions">
+      <button
+        type="button"
+        class="page-button page-direction"
+        aria-label="Previous page"
+        [disabled]="currentPage() === 1"
+        (click)="select(currentPage() - 1)"
+      >
+        <span aria-hidden="true">←</span><span class="direction-label">Previous</span>
+      </button>
+      @for (entry of pages(); track entry) {
+        @if (entry === 'start-gap' || entry === 'end-gap') {
+          <span class="page-gap" aria-hidden="true">…</span>
+        } @else {
+          <button
+            type="button"
+            class="page-button"
+            [class.current]="entry === currentPage()"
+            [attr.aria-current]="entry === currentPage() ? 'page' : null"
+            [attr.aria-label]="'Go to page ' + entry"
+            (click)="select(entry)"
+          >
+            {{ entry }}
+          </button>
+        }
+      }
+      <button
+        type="button"
+        class="page-button page-direction"
+        aria-label="Next page"
+        [disabled]="currentPage() === totalPages()"
+        (click)="select(currentPage() + 1)"
+      >
+        <span class="direction-label">Next</span><span aria-hidden="true">→</span>
+      </button>
+    </div>
+  }
+</div>
